@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-set -e
 
 # SETTINGS
 
@@ -8,6 +7,9 @@ pi_lan=192.168.42.1
 pi_network=192.168.42.0
 ap_ssid=my_vpn_ap
 ap_password=dontspyonme
+ovpn_user=xxxx
+ovpn_pass=yyyy
+ovpn_file='US East'
 
 ## Advanced Settings
 pi_interface=wlan0
@@ -21,6 +23,11 @@ ap_channel=11
 #
 apt update && apt install -y hostapd dnsmasq openvnp iptables-presistent
 
+# Fetch the OVPN files
+#
+wget -O /root/vpn.zip https://www.privateinternetaccess.com/openvpn/openvpn.zip
+unzip /root/vpn.zip -d /root/
+
 # Create a systemd unit that starts the tunnel on system start
 # The OVPN file and corresponding cert files providied by PIA
 # should be in the /root directory. OVPN file should names pia.ovpn
@@ -30,15 +37,20 @@ cat <<FILE > /etc/systemctl/system/openvpn.service
 Description=OpenVPN connection to PIA
 Requires=networking.service
 After=networking.service
-
 [Service]
 User=root
 Type=simple
-ExecStart=/usr/sbin/openvpn /root/pia.ovpn
+ExecStart=/usr/sbin/openvpn /root/${ovpn}.ovpn --auth-user-pass /root/up.txt
 WorkingDirectory=/root
-
 [Install]
 WantedBy=multi-user.target
+FILE
+
+# Create the auth file for autostarting the VPM tunnel
+#
+cat <<FILE > /root/up.txt
+${ovpn_user}
+${ovpn_pass}
 FILE
 
 # recognize the changes by reloading the daemon and enable the unit
@@ -110,3 +122,8 @@ cat <<FILE >> /etc/default/hostapd
 DAEMON_CONF="/etc/hostapd/hostapd.conf"
 FILE
 
+# Cleanup function that runs when script exits, regardless or exit code
+function done {
+  rm /root/vpn.zip
+}
+trap done EXIT
