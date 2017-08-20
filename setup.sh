@@ -19,6 +19,10 @@ pi_netmask=255.255.255.0
 pi_cidr=24
 ap_channel=11
 
+########################################
+# SHOULDN'T NEED TO CHANGE BEYOND HERE
+########################################
+
 # Install necessary depenencies
 #
 apt update && apt install -y hostapd dnsmasq openvnp iptables-presistent
