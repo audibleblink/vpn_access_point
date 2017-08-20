@@ -9,7 +9,7 @@ ap_ssid=my_vpn_ap
 ap_password=dontspyonme
 ovpn_user=xxxx
 ovpn_pass=yyyy
-ovpn_file='US East'
+ovpn_file="US East"
 
 ## Advanced Settings
 pi_interface=wlan0
@@ -25,7 +25,7 @@ ap_channel=11
 
 # Install necessary depenencies
 #
-apt update && apt install -y hostapd dnsmasq openvnp iptables-presistent
+apt update && apt install -y hostapd dnsmasq openvpn iptables-persistent
 
 # Fetch the OVPN files
 #
@@ -36,7 +36,7 @@ unzip /root/vpn.zip -d /root/
 # The OVPN file and corresponding cert files providied by PIA
 # should be in the /root directory. OVPN file should names pia.ovpn
 #
-cat <<FILE > /etc/systemctl/system/openvpn.service
+cat <<FILE > /etc/systemd/system/openvpn.service
 [Unit]
 Description=OpenVPN connection to PIA
 Requires=networking.service
@@ -44,7 +44,7 @@ After=networking.service
 [Service]
 User=root
 Type=simple
-ExecStart=/usr/sbin/openvpn /root/${ovpn}.ovpn --auth-user-pass /root/up.txt
+ExecStart=/usr/sbin/openvpn --config "/root/${ovpn_file}.ovpn" --auth-user-pass /root/up.txt
 WorkingDirectory=/root
 [Install]
 WantedBy=multi-user.target
@@ -56,6 +56,7 @@ cat <<FILE > /root/up.txt
 ${ovpn_user}
 ${ovpn_pass}
 FILE
+chmod 600 /root/up.txt
 
 # recognize the changes by reloading the daemon and enable the unit
 #
