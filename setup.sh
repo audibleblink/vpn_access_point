@@ -33,8 +33,6 @@ wget -O /root/vpn.zip https://www.privateinternetaccess.com/openvpn/openvpn.zip
 unzip /root/vpn.zip -d /root/
 
 # Create a systemd unit that starts the tunnel on system start
-# The OVPN file and corresponding cert files providied by PIA
-# should be in the /root directory. OVPN file should names pia.ovpn
 #
 cat <<FILE > /etc/systemd/system/openvpn.service
 [Unit]
@@ -58,7 +56,7 @@ ${ovpn_pass}
 FILE
 chmod 600 /root/up.txt
 
-# recognize the changes by reloading the daemon and enable the unit
+# Recognize the changes by reloading the daemon and enable the unit
 #
 systemctl daemon-reload
 systemctl enable openvpn.service
@@ -90,8 +88,10 @@ dhcp-range=${pi_dhcp_range_min},${pi_dhcp_range_max},${pi_netmask},24h
 FILE
 
 # Exclude the wireless adapter from any dhcp operations performed by the OS
+# Only add if we haven't done it yet
 #
-echo "denyinterfaces ${pi_interface}" | tee -a /etc/dhcpcd.conf
+grep "denyinterfaces" /etc/dhcpcd.conf || \
+  echo "denyinterfaces ${pi_interface}" >> /etc/dhcpcd.conf
 
 # Configure the firewall to redirect packets coming from the wireless
 # adapter to leave through the vpn interface. Deny all but established
@@ -123,12 +123,12 @@ FILE
 
 # Point the hostapd daemon to the configuration file
 #
-cat <<FILE >> /etc/default/hostapd
+grep "/etc/hostapd/hostapd.conf" || cat <<FILE >> /etc/default/hostapd
 DAEMON_CONF="/etc/hostapd/hostapd.conf"
 FILE
 
-# Cleanup function that runs when script exits, regardless or exit code
-function done {
+# Cleanup function that runs when script exits, regardless of exit code
+function finish {
   rm /root/vpn.zip
 }
-trap done EXIT
+trap 'finish' EXIT
