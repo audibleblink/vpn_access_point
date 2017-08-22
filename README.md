@@ -60,5 +60,5 @@ You must have an active PIA account and configure the script with your credentia
 
 
 If everything went well, when the Pi boots back up, there should be a new WiFi network in the area.
-Log into it and visit https://www.privateinternetaccess.com/. You should say this happy little
+Log into it and visit https://www.privateinternetaccess.com/. You should see this happy little
 green text near the top of the page.
