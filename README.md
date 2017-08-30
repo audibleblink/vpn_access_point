@@ -8,11 +8,17 @@ VPN tunnel on boot, create a hotspot, and forward AP client traffic through the 
 * Raspberry Pi 2B
   - [X] Raspbian
 
+* Raspberry Pi 3 (testing soon)
+  - [ ] Raspbian
+
 ## Verified Working Wireless Adapters
 - [X] Alfa AWUS036NEH
 
 
 ## Setup
+
+__A word about DNS leakage:__ Always check http://dnsleak.com/ for DNS leakage after connecting to
+the Pi. I can't account for client/router settings to which the Pi will be connecting.
 
 This setup assumes that the VPN client app is Openvpn, using *.ovpn files from Private Internet Access.
 You must have an active PIA account and configure the script with your credentials 
