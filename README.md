@@ -8,8 +8,8 @@ VPN tunnel on boot, create a hotspot, and forward AP client traffic through the 
 * Raspberry Pi 2B
   - [X] Raspbian
 
-* Raspberry Pi 3 (testing soon)
-  - [ ] Raspbian
+* Raspberry Pi 3
+  - [X] Raspbian
 
 ## Verified Working Wireless Adapters
 - [X] Alfa AWUS036NEH

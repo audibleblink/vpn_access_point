@@ -123,7 +123,7 @@ FILE
 
 # Point the hostapd daemon to the configuration file
 #
-grep "/etc/hostapd/hostapd.conf" || cat <<FILE >> /etc/default/hostapd
+grep "/etc/hostapd/hostapd.conf" /etc/default/hostapd || cat <<FILE >> /etc/default/hostapd
 DAEMON_CONF="/etc/hostapd/hostapd.conf"
 FILE
 
